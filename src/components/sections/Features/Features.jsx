@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { features as fallbackFeatures } from '../../../data/features.js'
 import Feature from './Feature.jsx'
 
@@ -6,6 +7,7 @@ export default function Features() {
     const [items, setItems] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const navigate = useNavigate()
 
     useEffect(() => {
         let cancelled = false
@@ -32,6 +34,7 @@ export default function Features() {
 
     function formatDateMeta(ts) {
         try {
+            if (!ts) return null
             const d = ts ? new Date(ts) : new Date()
             if (isNaN(d.getTime())) return null
             const month = d.toLocaleString(undefined, { month: 'short' }).toUpperCase()
@@ -67,6 +70,7 @@ export default function Features() {
                         sourceText: sourceFromUrl(item.url),
                         sourceHref: item.url,
                     }}
+                    onClick={() => item.id && navigate(`/feed/${item.id}`, { state: { feed: item } })}
                 >
                     {/* optional description under title when available later */}
                 </Feature>
