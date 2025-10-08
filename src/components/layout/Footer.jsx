@@ -9,7 +9,6 @@ export default function Footer() {
         </a>
         <nav>
           <a href="#features">Features</a>
-          <a href="#showcase">Showcase</a>
           <a href="#pricing">Pricing</a>
           <a href="#contact">Contact</a>
         </nav>

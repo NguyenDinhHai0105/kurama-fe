@@ -8,8 +8,7 @@ function formatDate(ts) {
     const d = ts ? new Date(ts) : null
     if (!d || isNaN(d.getTime())) return null
     return d.toLocaleString(undefined, {
-      year: 'numeric', month: 'short', day: '2-digit',
-      hour: '2-digit', minute: '2-digit'
+      year: 'numeric', month: 'long', day: 'numeric'
     })
   } catch {
     return null
@@ -25,6 +24,20 @@ function sourceFromUrl(u) {
   } catch {
     return 'SOURCE'
   }
+}
+
+function extractFirstImage(html) {
+  try {
+    if (!html) return null
+    const match = String(html).match(/<img[^>]+src=["']?([^"'> ]+)["']?[^>]*>/i)
+    return match ? match[1] : null
+  } catch {
+    return null
+  }
+}
+
+function plainText(html) {
+  try { return String(html || '').replace(/<[^>]*>/g, '') } catch { return '' }
 }
 
 export default function FeedArticles() {
@@ -90,58 +103,82 @@ export default function FeedArticles() {
   return (
     <div className="feed-page">
       <Header />
-      <main className="container" style={{ padding: '2rem 1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-          <Link to="/" className="btn btn-ghost">← Back</Link>
-          <h1 style={{ margin: 0 }}>{headerTitle}</h1>
+      <main className="container py-4">
+        <div className="d-flex align-items-center gap-3 mb-3">
+          <Link to="/" className="btn btn-outline-secondary">← Back</Link>
+          <h1 className="m-0 h3">{headerTitle}</h1>
         </div>
 
         {feedMeta?.backgroundImg && (
-          <div style={{ marginBottom: '1rem' }}>
+          <div className="mb-3">
             <img src={feedMeta.backgroundImg} alt="" style={{ height: 56, width: 56, objectFit: 'contain' }} />
           </div>
         )}
 
         {loading && (
-          <p style={{ color: 'var(--muted)' }}>Loading articles…</p>
+          <p className="text-secondary">Loading articles…</p>
         )}
 
         {!loading && error && (
-          <div style={{ color: 'var(--danger)' }}>
-            <p>Failed to load articles.</p>
-            <pre style={{ whiteSpace: 'pre-wrap' }}>{String(error.message || error)}</pre>
+          <div className="text-danger">
+            <p className="mb-1">Failed to load articles.</p>
+            <pre className="mb-0" style={{ whiteSpace: 'pre-wrap' }}>{String(error.message || error)}</pre>
           </div>
         )}
 
         {!loading && !error && articles.length === 0 && (
-          <p style={{ color: 'var(--muted)' }}>No articles for this feed yet.</p>
+          <p className="text-secondary">No articles for this feed yet.</p>
         )}
 
         {!loading && !error && articles.length > 0 && (
-          <ul className="articles" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: '1rem' }}>
-            {articles.map(a => (
-              <li key={a.guid} className="article-card" style={{ border: '1px solid var(--border)', borderRadius: 12, padding: '1rem' }}>
-                <h2 style={{ marginTop: 0, marginBottom: '.25rem' }}>
-                  <a href={a.link} target="_blank" rel="noreferrer">{a.title || 'Untitled'}</a>
-                </h2>
-                <p style={{ margin: 0, color: 'var(--muted)' }}>
-                  {a.author ? `${a.author} · ` : ''}{formatDate(a.publishDate) || ''}
-                </p>
-                {a.description && (
-                  <p style={{ marginTop: '.5rem' }}>
-                    {a.description.replace(/<[^>]*>/g, '').slice(0, 240)}{a.description.length > 240 ? '…' : ''}
-                  </p>
-                )}
-                <div style={{ marginTop: '.5rem' }}>
-                  <a className="btn" href={a.link} target="_blank" rel="noreferrer">Read more</a>
+          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
+            {articles.map(a => {
+              const text = plainText(a.description)
+              const preview = text.slice(0, 160)
+              const imgFromContent = extractFirstImage(a.content)
+              const imgFromDesc = extractFirstImage(a.description)
+              const thumb = imgFromContent || imgFromDesc || null
+              const dateText = formatDate(a.publishDate) || ''
+              const author = a.author || ''
+              return (
+                <div key={a.guid} className="col">
+                  <div className="post-card h-100">
+                    <div className="post-thumb-wrapper" style={{ aspectRatio: '16/9' }}>
+                      {thumb ? (
+                        <img className="post-thumb" src={thumb} alt="" loading="lazy" />
+                      ) : (
+                        <div className="post-thumb" style={{ background: 'linear-gradient(135deg,#e2e8f0,#f8fafc)' }} />
+                      )}
+                    </div>
+                    <div className="post-content p-3">
+                      <h5 className="post-title mb-2 position-relative">
+                        <a href={a.link} target="_blank" rel="noreferrer" className="stretched-link">{a.title || 'Untitled'}</a>
+                      </h5>
+                      {preview && (
+                        <p className="post-desc mb-0">{preview}{text.length > 160 ? '…' : ''}</p>
+                      )}
+                    </div>
+                    <div className="post-footer border-top">
+                      <div className="post-meta">
+                         <div className="post-author">
+                           <div className="avatar" style={{ background: '#e2e8f0', display: 'inline-block' }} />
+                           <div className="author-text" style={{ lineHeight: 1.15, minWidth: 0 }}>
+                             <div className="name fw-semibold" style={{ fontSize: '.95rem' }}>{author || sourceFromUrl(a.link)}</div>
+                             <div className="date text-muted" style={{ fontSize: '.85rem' }}>{dateText}</div>
+                           </div>
+                         </div>
+                         {/* Right side placeholder for future actions (e.g., comments) */}
+                         <div className="text-muted" aria-hidden="true">&nbsp;</div>
+                       </div>
+                     </div>
+                  </div>
                 </div>
-              </li>
-            ))}
-          </ul>
+              )
+            })}
+          </div>
         )}
       </main>
       <Footer />
     </div>
   )
 }
-

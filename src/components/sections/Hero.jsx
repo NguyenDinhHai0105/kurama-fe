@@ -10,8 +10,8 @@ export default function Hero() {
           who iterate quickly.
         </p>
         <div className="cta-group">
-          <a className="btn btn--primary" href="#get-started">Start free</a>
-          <a className="btn btn--ghost" href="#docs">Read docs</a>
+          <a className="btn btn-primary" href="#get-started">Start free</a>
+          <a className="btn btn-outline-secondary" href="#docs">Read docs</a>
         </div>
         <div className="meta">
           <span>⚡ Fast dev server</span>
