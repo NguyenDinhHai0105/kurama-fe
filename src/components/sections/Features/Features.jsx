@@ -53,7 +53,7 @@ export default function Features() {
             const core = parts.length > 1 ? parts[parts.length - 2] : parts[0]
             return core.replace(/[-_]/g, ' ').toUpperCase()
         } catch {
-            return 'SOURCE'
+            return 'DEV BLOG'
         }
     }
 
@@ -88,12 +88,12 @@ export default function Features() {
 
     return (
         <section className="features" id="features">
-            <h2>Everything you need, nothing you don't</h2>
+            <h2>Latest posts from the Dev Blog</h2>
             <div className="grid">
                 {loading && renderFallback()}
                 {!loading && !error && items && items.length > 0 && renderFromApi()}
                 {!loading && (!items || items.length === 0) && !error && (
-                    <p style={{ gridColumn: '1 / -1', color: 'var(--muted)' }}>No feeds found.</p>
+                    <p style={{ gridColumn: '1 / -1', color: 'var(--muted)' }}>No posts yet. Check back soon.</p>
                 )}
                 {!loading && error && renderFallback()}
             </div>

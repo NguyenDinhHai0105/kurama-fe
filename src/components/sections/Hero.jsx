@@ -2,21 +2,20 @@ export default function Hero() {
   return (
     <section className="hero" id="home">
       <div className="hero-content">
-        <p className="eyebrow">Modern React tooling • 2025-ready</p>
-        <h1>Build delightful experiences at startup speed</h1>
+        <p className="eyebrow">Dev Blog • Engineering notes & updates</p>
+        <h1>Kurama Dev Blog</h1>
         <p className="subhead">
-          Ship accessible, responsive apps faster with a clean React + Vite setup,
-          smart defaults, and zero heavy dependencies. Designed for real teams
-          who iterate quickly.
+          Practical write‑ups from the team: release notes, deep dives, and tips
+          for building fast, reliable frontends. No fluff—just lessons learned.
         </p>
         <div className="cta-group">
-          <a className="btn btn-primary" href="#get-started">Start free</a>
-          <a className="btn btn-outline-secondary" href="#docs">Read docs</a>
+          <a className="btn btn-primary" href="#features">Read latest posts</a>
+          <a className="btn btn-outline-secondary" href="#get-started">About this blog</a>
         </div>
         <div className="meta">
-          <span>⚡ Fast dev server</span>
-          <span>🔒 Type-safe ready</span>
-          <span>🌓 Dark-mode aware</span>
+          <span>📰 RSS available</span>
+          <span>🧩 Open source</span>
+          <span>🔍 No trackers</span>
         </div>
       </div>
       <div className="hero-media" aria-hidden="true">
