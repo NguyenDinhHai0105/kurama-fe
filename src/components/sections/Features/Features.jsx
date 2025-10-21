@@ -48,7 +48,6 @@ export default function Features() {
     function sourceFromUrl(u) {
         try {
             const url = new URL(u)
-            // take main domain part and prettify
             const parts = url.hostname.replace('www.', '').split('.')
             const core = parts.length > 1 ? parts[parts.length - 2] : parts[0]
             return core.replace(/[-_]/g, ' ').toUpperCase()
@@ -65,15 +64,8 @@ export default function Features() {
                     icon="📰"
                     title={item.title || 'Untitled'}
                     backgroundImg={item.backgroundImg}
-                    meta={{
-                        dateText: formatDateMeta(item.lastPolledAt) || '—',
-                        sourceText: sourceFromUrl(item.url),
-                        sourceHref: item.url,
-                    }}
                     onClick={() => item.id && navigate(`/feed/${item.id}`, { state: { feed: item } })}
-                >
-                    {/* optional description under title when available later */}
-                </Feature>
+                />
             ))}
         </>
     )
